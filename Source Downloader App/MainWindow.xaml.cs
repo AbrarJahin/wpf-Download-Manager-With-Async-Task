@@ -24,5 +24,10 @@ namespace Source_Downloader_App
         {
             InitializeComponent();
         }
+
+        private void bDownloadSource(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("OK");
+        }
     }
 }
