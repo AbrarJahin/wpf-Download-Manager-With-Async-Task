@@ -4,14 +4,68 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Source_Downloader_App"
+        xmlns:adorners="http://gu.se/Adorners"
         mc:Ignorable="d"
-        Title="Source Downloader" Height="109.804" Width="525" ResizeMode="CanResizeWithGrip">
+        Title="Source Downloader"
+        Height="109.804"
+        Width="525"
+        ResizeMode="NoResize">
     <Grid>
-        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="URL" VerticalAlignment="Top" FontSize="16" Height="22"/>
-        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="22" Margin="43,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="384"/>
-        <Button x:Name="button" Content="Download" HorizontalAlignment="Left" Margin="432,10,0,0" VerticalAlignment="Top" Width="75" Click="bDownloadSource"/>
-        <ProgressBar HorizontalAlignment="Left" Height="11" Margin="10,37,0,0" VerticalAlignment="Top" Width="497" Visibility="Hidden"/>
-        <TextBlock x:Name="textBlock1" HorizontalAlignment="Left" Margin="10,53,0,0" TextWrapping="Wrap" Text="Total No of Divs - " VerticalAlignment="Top" Visibility="Hidden"/>
-        <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" Margin="112,53,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Visibility="Hidden"/>
+        <TextBlock
+            x:Name="textBlock"
+            HorizontalAlignment="Left"
+            Margin="10,10,0,0"
+            TextWrapping="Wrap"
+            Text="URL"
+            VerticalAlignment="Top"
+            FontSize="16"
+            Height="22"
+        />
+        <TextBox
+            x:Name="downloadUrl"
+            HorizontalAlignment="Left"
+            Height="22"
+            Margin="43,10,0,0"
+            TextWrapping="Wrap"
+            VerticalAlignment="Top"
+            Width="384"
+            adorners:Watermark.Text="Please enter your URL here"
+        />
+        <Button
+            x:Name="button"
+            Content="Download"
+            HorizontalAlignment="Left"
+            Margin="432,10,0,0"
+            VerticalAlignment="Top"
+            Width="75"
+            Click="bDownloadSource"
+        />
+        <ProgressBar
+            x:Name="downloadProgress"
+            HorizontalAlignment="Left"
+            Height="11"
+            Margin="10,37,0,0"
+            VerticalAlignment="Top"
+            Width="497"
+            Visibility="Hidden"
+        />
+        <TextBlock
+            x:Name="calculationResultTitle"
+            HorizontalAlignment="Left"
+            Margin="10,53,0,0"
+            TextWrapping="Wrap"
+            Text="Total No of Divs - "
+            VerticalAlignment="Top"
+            Visibility="Hidden"
+        />
+        <TextBlock
+            x:Name="calculationResultValue"
+            HorizontalAlignment="Left"
+            Margin="112,53,0,0"
+            TextWrapping="Wrap"
+            Text="0"
+            VerticalAlignment="Top"
+            Visibility="Hidden"
+        />
     </Grid>
 </Window>

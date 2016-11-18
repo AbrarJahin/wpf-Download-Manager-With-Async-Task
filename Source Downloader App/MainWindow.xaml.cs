@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Gu.Wpf.Adorners;
 
 namespace Source_Downloader_App
 {
@@ -27,7 +28,10 @@ namespace Source_Downloader_App
 
         private void bDownloadSource(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("OK");
+            downloadProgress.Visibility = Visibility.Visible;
+            calculationResultTitle.Visibility = Visibility.Visible;
+            calculationResultValue.Visibility = Visibility.Visible;
+            MessageBox.Show(downloadUrl.Text);
         }
     }
 }
