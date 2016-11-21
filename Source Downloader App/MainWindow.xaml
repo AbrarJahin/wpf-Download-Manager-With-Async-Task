@@ -9,7 +9,8 @@
         Title="Source Downloader"
         Height="109.804"
         Width="525"
-        ResizeMode="NoResize">
+        ResizeMode="NoResize"
+        >
     <Grid>
         <TextBlock
             x:Name="textBlock"
@@ -29,6 +30,7 @@
             TextWrapping="Wrap"
             VerticalAlignment="Top"
             Width="384"
+            AcceptsReturn="True"
             adorners:Watermark.Text="Please enter your URL here"
         />
         <Button

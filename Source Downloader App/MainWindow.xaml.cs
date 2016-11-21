@@ -4,6 +4,7 @@ using System.Net;
 using System.IO;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace Source_Downloader_App
 {
@@ -30,42 +31,31 @@ namespace Source_Downloader_App
             downloadProgress.Visibility = Visibility.Hidden;
         }
 
-        private async void startDownloadFile(string url)
+        private void startDownloadFile(string url)
         {
-            //var html = new System.Net.WebClient().DownloadString(url);
-            //Console.WriteLine("Done");
-            WebClient client = new WebClient();
-
+            var downloadedFileString = string.Empty;
             try
             {
-                client.DownloadFileAsync(new Uri(url), downloadFileLocation);
-                await viewTotalDivCount(downloadFileLocation);
+                //client.DownloadFileAsync(new Uri(url), downloadFileLocation);
+                using (var webClient = new WebClient())
+                {
+                    downloadedFileString = webClient.DownloadString(url);
+                    File.WriteAllText(downloadFileLocation, downloadedFileString);
+                }
+
+                //Now calculate total no of divs
+                using (StreamReader sr = new StreamReader(downloadFileLocation))
+                {
+                    var matches = Regex.Matches(downloadedFileString.ToLower(), "</div>");
+                    calculationResultValue.Text = matches.Count.ToString();
+                }
+
                 MessageBox.Show("Download Completed");
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.ToString());
             }
-        }
-
-        private Task viewTotalDivCount(string htmlFileLocation)
-        {
-            try
-            {   // Open the text file using a stream reader.
-                using (StreamReader sr = new StreamReader(htmlFileLocation))
-                {
-                    // Read the stream to a string, and write the string to the console.
-                    String downloadedHtml = sr.ReadToEnd();
-                    var matches = Regex.Matches(downloadedHtml, "<div>");
-                    calculationResultValue.Text = matches.Count.ToString();
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("The file could not be read:");
-                Console.WriteLine(e.Message);
-            }
-            return Task.FromResult<object>(null);
         }
     }
 }
