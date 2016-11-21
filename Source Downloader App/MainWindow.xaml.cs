@@ -59,12 +59,9 @@ namespace Source_Downloader_App
         private void wcDownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
             downloadProgress.Visibility = Visibility.Hidden;
-            //Now calculate total no of divs
-            using (StreamReader sr = new StreamReader(downloadFileLocation))
-            {
-                var matches = Regex.Matches(downloadedFileString.ToLower(), "</div>");
-                calculationResultValue.Text = matches.Count.ToString();
-            }
+            ////Now calculate total no of divs
+            //var matches = Regex.Matches(downloadedFileString.ToLower(), "</div>");
+            //calculationResultValue.Text = matches.Count.ToString();
 
             MessageBox.Show("Download Completed");
         }
@@ -74,6 +71,10 @@ namespace Source_Downloader_App
             downloadedFileString = downloadArgument.Result;
             // Store the result
             File.WriteAllText(downloadFileLocation, downloadedFileString);
+
+            //Now calculate total no of divs
+            var matches = Regex.Matches(downloadedFileString.ToLower(), "</div>");
+            calculationResultValue.Text = matches.Count.ToString();
         }
     }
 }
