@@ -3,17 +3,14 @@ using System.Windows;
 using System.Net;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.ComponentModel;
 
 namespace Source_Downloader_App
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private readonly String downloadFileLocation = AppDomain.CurrentDomain.BaseDirectory + "download.txt";
         private String downloadedFileString = string.Empty;
+        DateTime lastClicked;
 
         public MainWindow()
         {
@@ -23,11 +20,11 @@ namespace Source_Downloader_App
         private void bDownloadSource(object sender, RoutedEventArgs e)
         {
             bDownload.IsEnabled = false;
-            calculationResultTitle.Visibility = Visibility.Visible;
-            calculationResultValue.Visibility = Visibility.Visible;
-
+            calculationResultTitle.Visibility   = Visibility.Visible;
+            calculationResultValue.Visibility   = Visibility.Visible;
+            downloadTime.Visibility             = Visibility.Visible;
+            lastClicked = DateTime.Now;
             startDownloadFile(downloadUrl.Text);
-            bDownload.IsEnabled = true;
         }
 
         private void startDownloadFile(string url)
@@ -35,38 +32,28 @@ namespace Source_Downloader_App
             try
             {
                 downloadProgress.Visibility = Visibility.Visible;
-
+                
                 WebClient webClient = new WebClient();
-                webClient.DownloadStringCompleted += new DownloadStringCompletedEventHandler(wcDownloadStringCompleted);
+                webClient.DownloadStringCompleted += wcDownloadStringDownloadCompleted;
 
                 //Update UI with download progress
                 webClient.DownloadProgressChanged += (s, e) =>
                 {
                     downloadProgress.Value = e.ProgressPercentage;
+                    downloadTime.Text = "Download Time - "+(DateTime.Now - lastClicked).TotalSeconds.ToString()+ " s";
                 };
-
-                //webClient.DownloadFileCompleted += new AsyncCompletedEventHandler(wcDownloadFileCompleted);
-                webClient.DownloadFileCompleted += new AsyncCompletedEventHandler(wcDownloadFileCompleted);
 
                 webClient.DownloadStringAsync(new Uri(url), downloadFileLocation);
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.ToString());
+                bDownload.IsEnabled = true;
+                downloadProgress.Visibility = Visibility.Hidden;
             }
         }
 
-        private void wcDownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
-        {
-            downloadProgress.Visibility = Visibility.Hidden;
-            ////Now calculate total no of divs
-            //var matches = Regex.Matches(downloadedFileString.ToLower(), "</div>");
-            //calculationResultValue.Text = matches.Count.ToString();
-
-            MessageBox.Show("Download Completed");
-        }
-
-        void wcDownloadStringCompleted(object sender, DownloadStringCompletedEventArgs downloadArgument)
+        void wcDownloadStringDownloadCompleted(object sender, DownloadStringCompletedEventArgs downloadArgument)
         {
             downloadedFileString = downloadArgument.Result;
             // Store the result
@@ -75,6 +62,10 @@ namespace Source_Downloader_App
             //Now calculate total no of divs
             var matches = Regex.Matches(downloadedFileString.ToLower(), "</div>");
             calculationResultValue.Text = matches.Count.ToString();
+
+            downloadProgress.Visibility = Visibility.Hidden;
+            bDownload.IsEnabled = true;
+            MessageBox.Show("Download Completed");
         }
     }
 }

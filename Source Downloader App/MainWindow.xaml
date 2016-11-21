@@ -69,5 +69,17 @@
             VerticalAlignment="Top"
             Visibility="Hidden"
         />
+        <TextBlock
+            x:Name="downloadTime"
+            HorizontalAlignment="Left"
+            TextAlignment="Right"
+            Height="23"
+            Margin="259,49,0,0"
+            TextWrapping="Wrap"
+            VerticalAlignment="Top"
+            Width="248"
+            Text="Download Time - 0 s"
+            Visibility="Hidden"
+        />
     </Grid>
 </Window>
