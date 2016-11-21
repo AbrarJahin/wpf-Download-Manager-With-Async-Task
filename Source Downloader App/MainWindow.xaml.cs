@@ -2,9 +2,8 @@
 using System.Windows;
 using System.Net;
 using System.IO;
-using System.Threading.Tasks;
 using System.Text.RegularExpressions;
-using System.Linq;
+using System.ComponentModel;
 
 namespace Source_Downloader_App
 {
@@ -14,6 +13,7 @@ namespace Source_Downloader_App
     public partial class MainWindow : Window
     {
         private readonly String downloadFileLocation = AppDomain.CurrentDomain.BaseDirectory + "download.txt";
+        private String downloadedFileString = string.Empty;
 
         public MainWindow()
         {
@@ -22,40 +22,58 @@ namespace Source_Downloader_App
 
         private void bDownloadSource(object sender, RoutedEventArgs e)
         {
-            downloadProgress.Visibility = Visibility.Visible;
+            bDownload.IsEnabled = false;
             calculationResultTitle.Visibility = Visibility.Visible;
             calculationResultValue.Visibility = Visibility.Visible;
 
             startDownloadFile(downloadUrl.Text);
-
-            downloadProgress.Visibility = Visibility.Hidden;
+            bDownload.IsEnabled = true;
         }
 
         private void startDownloadFile(string url)
         {
-            var downloadedFileString = string.Empty;
             try
             {
-                //client.DownloadFileAsync(new Uri(url), downloadFileLocation);
-                using (var webClient = new WebClient())
-                {
-                    downloadedFileString = webClient.DownloadString(url);
-                    File.WriteAllText(downloadFileLocation, downloadedFileString);
-                }
+                downloadProgress.Visibility = Visibility.Visible;
 
-                //Now calculate total no of divs
-                using (StreamReader sr = new StreamReader(downloadFileLocation))
-                {
-                    var matches = Regex.Matches(downloadedFileString.ToLower(), "</div>");
-                    calculationResultValue.Text = matches.Count.ToString();
-                }
+                WebClient webClient = new WebClient();
+                webClient.DownloadStringCompleted += new DownloadStringCompletedEventHandler(wcDownloadStringCompleted);
 
-                MessageBox.Show("Download Completed");
+                //Update UI with download progress
+                webClient.DownloadProgressChanged += (s, e) =>
+                {
+                    downloadProgress.Value = e.ProgressPercentage;
+                };
+
+                //webClient.DownloadFileCompleted += new AsyncCompletedEventHandler(wcDownloadFileCompleted);
+                webClient.DownloadFileCompleted += new AsyncCompletedEventHandler(wcDownloadFileCompleted);
+
+                webClient.DownloadStringAsync(new Uri(url), downloadFileLocation);
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.ToString());
             }
+        }
+
+        private void wcDownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
+        {
+            downloadProgress.Visibility = Visibility.Hidden;
+            //Now calculate total no of divs
+            using (StreamReader sr = new StreamReader(downloadFileLocation))
+            {
+                var matches = Regex.Matches(downloadedFileString.ToLower(), "</div>");
+                calculationResultValue.Text = matches.Count.ToString();
+            }
+
+            MessageBox.Show("Download Completed");
+        }
+
+        void wcDownloadStringCompleted(object sender, DownloadStringCompletedEventArgs downloadArgument)
+        {
+            downloadedFileString = downloadArgument.Result;
+            // Store the result
+            File.WriteAllText(downloadFileLocation, downloadedFileString);
         }
     }
 }

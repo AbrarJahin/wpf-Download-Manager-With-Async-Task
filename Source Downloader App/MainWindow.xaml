@@ -34,7 +34,7 @@
             adorners:Watermark.Text="Please enter your URL here"
         />
         <Button
-            x:Name="button"
+            x:Name="bDownload"
             Content="Download"
             HorizontalAlignment="Left"
             Margin="432,10,0,0"
